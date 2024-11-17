@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>BMI計算機</title>
+</head>
+<body>
+  <h1>BMI計算機</h1>
+  <form action="/bmi" method="get">
+    <label>身長(cm): <input type="number" name="height" required></label><br>
+    <label>体重(kg): <input type="number" name="weight" required></label><br>
+    <button type="submit">計算</button>
+  </form>
+
+  <% if (bmi !== "入力が不正です") { %>
+    <h2>結果</h2>
+    <p>身長: <%= height %> cm</p>
+    <p>体重: <%= weight %> kg</p>
+    <p>BMI: <%= bmi %></p>
+  <% } else if (height || weight) { %>
+    <p><%= bmi %></p>
+  <% } %>
+</body>
+</html>
