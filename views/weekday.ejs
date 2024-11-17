@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>曜日計算機</title>
+</head>
+<body>
+  <h1>曜日計算機</h1>
+  <form action="/weekday" method="get">
+    <label>日付 (YYYY-MM-DD): <input type="date" name="date" required></label><br>
+    <button type="submit">計算</button>
+  </form>
+
+  <% if (date) { %>
+    <h2>結果</h2>
+    <p>入力された日付: <%= date %></p>
+    <p>曜日: <%= weekday %></p>
+  <% } else { %>
+    <p>日付を入力してください。</p>
+  <% } %>
+</body>
+</html>
