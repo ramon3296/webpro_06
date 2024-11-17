@@ -4,66 +4,40 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use("/public", express.static(__dirname + "/public"));
 
+// 既存機能
 app.get("/hello1", (req, res) => {
   const message1 = "Hello world";
   const message2 = "Bon jour";
   res.render('show', { greet1: message1, greet2: message2 });
 });
 
-app.get("/hello2", (req, res) => {
-  res.render('show', { greet1: "Hello world", greet2: "Bon jour" });
-});
+// 1. BMI計算機
+app.get("/bmi", (req, res) => {
+  const height = parseFloat(req.query.height) || 0;
+  const weight = parseFloat(req.query.weight) || 0;
+  let bmi = "入力が不正です";
 
-app.get("/icon", (req, res) => {
-  res.render('icon', { filename: "./public/Apple_logo_black.svg", alt: "Apple Logo" });
-});
-
-app.get("/luck", (req, res) => {
-  const num = Math.floor(Math.random() * 6 + 1);
-  let luck = '';
-  if (num == 1) luck = '大吉';
-  else if (num == 2) luck = '中吉';
-  console.log('あなたの運勢は' + luck + 'です');
-  res.render('luck', { number: num, luck: luck });
-});
-
-app.get("/janken", (req, res) => {
-  let hand = req.query.hand;
-  let win = Number(req.query.win);
-  let total = Number(req.query.total);
-  console.log({ hand, win, total });
-
-
-  const num = Math.floor(Math.random() * 3 + 1);
-  let cpu = '';
-  if (num == 1) cpu = 'グー';
-  else if (num == 2) cpu = 'チョキ';
-  else cpu = 'パー';
-
-
-  let judgement = '';
-  if (hand === cpu) {
-    judgement = '引き分け';
-  } else if (
-    (hand === 'グー' && cpu === 'チョキ') ||
-    (hand === 'チョキ' && cpu === 'パー') ||
-    (hand === 'パー' && cpu === 'グー')
-  ) {
-    judgement = '勝ち';
-    win += 1; 
-  } else {
-    judgement = '負け';
+  if (height > 0 && weight > 0) {
+    bmi = (weight / ((height / 100) ** 2)).toFixed(2); // BMI計算
   }
-  total += 1; 
 
-  const display = {
-    your: hand,
-    cpu: cpu,
-    judgement: judgement,
-    win: win,
-    total: total
-  };
-  res.render('janken', display);
+  res.render('bmi', { height, weight, bmi });
+});
+
+// 2. 曜日計算機
+app.get("/weekday", (req, res) => {
+  const date = req.query.date;
+  let weekday = "正しい日付を入力してください";
+
+  if (date) {
+    const day = new Date(date);
+    if (!isNaN(day)) {
+      const days = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
+      weekday = days[day.getUTCDay()];
+    }
+  }
+
+  res.render('weekday', { date, weekday });
 });
 
 app.listen(8080, () => console.log("Example app listening on port 8080!"));
