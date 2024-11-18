@@ -2,23 +2,24 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>BMI計算機</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMI計算</title>
 </head>
 <body>
-  <h1>BMI計算機</h1>
+  <h1>BMI計算</h1>
   <form action="/bmi" method="get">
-    <label>身長(cm): <input type="number" name="height" required></label><br>
-    <label>体重(kg): <input type="number" name="weight" required></label><br>
-    <button type="submit">計算</button>
+    <label for="weight">体重 (kg):</label>
+    <input type="number" id="weight" name="weight" step="0.1" required>
+    <label for="height">身長 (cm):</label>
+    <input type="number" id="height" name="height" step="0.1" required>
+    <button type="submit">BMIを計算</button>
   </form>
-
-  <% if (bmi !== "入力が不正です") { %>
-    <h2>結果</h2>
-    <p>身長: <%= height %> cm</p>
+  <% if (weight && height && bmi) { %>
     <p>体重: <%= weight %> kg</p>
+    <p>身長: <%= height %> cm</p>
     <p>BMI: <%= bmi %></p>
-  <% } else if (height || weight) { %>
-    <p><%= bmi %></p>
+  <% } else if (bmi === null && weight && height) { %>
+    <p>有効な値を入力してください。</p>
   <% } %>
 </body>
 </html>
