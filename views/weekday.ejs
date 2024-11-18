@@ -2,21 +2,19 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>曜日計算機</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>曜日計算</title>
 </head>
 <body>
-  <h1>曜日計算機</h1>
+  <h1>曜日計算</h1>
   <form action="/weekday" method="get">
-    <label>日付 (YYYY-MM-DD): <input type="date" name="date" required></label><br>
-    <button type="submit">計算</button>
+    <label for="date">日付を入力 (YYYY-MM-DD):</label>
+    <input type="date" id="date" name="date" required>
+    <button type="submit">曜日を計算</button>
   </form>
-
-  <% if (date) { %>
-    <h2>結果</h2>
+  <% if (date && day) { %>
     <p>入力された日付: <%= date %></p>
-    <p>曜日: <%= weekday %></p>
-  <% } else { %>
-    <p>日付を入力してください。</p>
+    <p>その日の曜日: <%= day %></p>
   <% } %>
 </body>
 </html>
