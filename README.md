@@ -14,26 +14,13 @@
 
 
 
-```mermaid
-flowchart TD;
-開始 --> 終了;
-```
+## 起動方法
+・ターミナルから node app5js を実行して、サーバー8080を立ち上げる
+・ブラウザで以下のURLを検索する
 
-```mermaid
-flowchart TD;
+じゃんけん：http://localhost:8080/janken
 
-start["開始"];
-end1["終了"]
-if{"条件に合うか"}
-win["勝ち"]
-loose["負け"]
 
-start --> if
-if -->|yes| win
-win --> end1
-if -->|no| loose
-loose --> end1
-```
 
 app5.js
 じゃんけんの勝ち負け判定
