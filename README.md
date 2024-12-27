@@ -10,8 +10,8 @@
 |views/janken.ejs| じゃんけん開始画面|
 | views/bmi.ejs　　　 | bmi算出開始画面|
 | views/weekday.ejs | 曜日算出開始画面|
+| public/janken.html | じゃんけんの結果表示用HTMLファイル　|
 
-| public/janken.html | じゃんけんの開始画面　|
 
 
 ```mermaid
