@@ -9,8 +9,8 @@
 | app5.js            | プログラム本体       |
 | public/janken.html | じゃんけんの開始画面　|
 | views/bmi.ejs　　　 | bmi算出開始画面|
-| views/bmi.ejs　　　 | bmi算出開始画面|
-| views/bmi.ejs　　　 | bmi算出開始画面|
+| views/weekday.ejs | 曜日算出開始画面|
+| views/bmi.ejs　　　 | じゃんけん開始画面|
 
 
 
