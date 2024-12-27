@@ -15,15 +15,20 @@
 
 
 ## 起動方法
-・ターミナルから node app5js を実行して、サーバー8080を立ち上げる。
+・ターミナルから node app5js を実行して、サーバー8080を立ち上げる
 
-・ブラウザで以下のURLを検索する。
+・ブラウザで以下のURLを検索する
 
 じゃんけん：http://localhost:8080/janken
+
 　　プレイヤーの手とCPUの手から勝敗を算出し public/janken.html に反映する
+
 bmi：http://localhost:8080/bmi
+
 　　入力された身長と体重からbmiを計算する
+  
 曜日表示：http://localhost:8080/weekday
+
 　　入力された日付から曜日を計算し表示する
 
 
