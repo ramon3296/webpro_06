@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BBS Sample</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>シンプルBBS</h1>
+
+    <div id="post">
+        <input type="text" id="comment" placeholder="コメントを入力">
+        <button onclick="sendComment()">コメント送信</button>
+        <button onclick="sendLike()">いいね</button>
+        <input type="file" id="fileInput">
+        <button onclick="uploadFile()">アップロード</button>
+    </div>
+
+    <div id="response"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
