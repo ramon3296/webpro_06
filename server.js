@@ -6,44 +6,55 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // フォーム対応
-app.use(express.static(path.join(__dirname)));   // index.htmlを公開
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname))); // index.htmlなどの静的ファイルを配信
 
-let likes = 0;
+// メモリ内にコメントを保持する仕組み
+// 各コメントは { id, text, likes } の形式
 let comments = [];
+let nextCommentId = 1;
+
 const upload = multer({ dest: 'uploads/' });
 
-// 📌 いいね機能（フォーム対応）
-app.post('/like', (req, res) => {
-    likes++;
-    if (req.headers.accept.includes('html')) {
-        res.send(`<h2>いいねが増えました: ${likes}</h2><a href="/">戻る</a>`);
-    } else {
-        res.json({ message: "いいねが増えました", likes });
-    }
-});
-
-// 📌 コメント機能（フォーム対応）
+// 【コメント投稿】POST /comment
 app.post('/comment', (req, res) => {
-    const comment = req.body.comment;
-    comments.push(comment);
-    if (req.headers.accept.includes('html')) {
-        res.send(`<h2>コメント追加: ${comment}</h2><a href="/">戻る</a>`);
-    } else {
-        res.json({ message: "コメント追加", comments });
+    const { comment } = req.body;
+    if (!comment) {
+        return res.status(400).json({ error: "コメントが空です" });
     }
+    const newComment = {
+        id: nextCommentId++,
+        text: comment,
+        likes: 0
+    };
+    comments.push(newComment);
+    res.json({ message: "コメント追加", comment: newComment, allComments: comments });
 });
 
-// 📌 ファイルアップロード機能（フォーム対応）
+// 【コメントにいいね】POST /comment/like
+app.post('/comment/like', (req, res) => {
+    const { id } = req.body;
+    const comment = comments.find(c => c.id === parseInt(id));
+    if (!comment) {
+        return res.status(404).json({ error: "コメントが見つかりません" });
+    }
+    comment.likes++;
+    res.json({ message: "コメントにいいね", comment });
+});
+
+// 【全コメント取得】GET /comments
+app.get('/comments', (req, res) => {
+    res.json(comments);
+});
+
+// 【ファイルアップロード】POST /upload
 app.post('/upload', upload.single('file'), (req, res) => {
-    if (req.headers.accept.includes('html')) {
-        res.send(`<h2>アップロード成功: ${req.file.originalname}</h2><a href="/">戻る</a>`);
-    } else {
-        res.json({ message: `アップロード成功: ${req.file.originalname}` });
+    if (!req.file) {
+        return res.status(400).json({ error: "ファイルが選択されていません" });
     }
+    res.json({ message: `アップロード成功: ${req.file.originalname}` });
 });
 
-// サーバー起動
 app.listen(port, () => {
     console.log(`🚀 サーバー起動: http://localhost:${port}`);
 });
