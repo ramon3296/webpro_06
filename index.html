@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>シンプルBBS（Twitter風）</title>
+    <title>シンプルBBS（Twitter風・画像対応）</title>
     <style>
         body { font-family: Arial; padding: 20px; }
         form { margin-bottom: 20px; }
         input, button, textarea { margin: 5px; padding: 10px; }
-        .comment { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+        .comment, .imageItem { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+        .imageItem img { max-width: 200px; display: block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
-    <h1>シンプルBBS（Twitter風）</h1>
+    <h1>シンプルBBS（Twitter風・画像対応）</h1>
 
     <!-- コメント投稿フォーム -->
     <form id="commentForm">
@@ -28,6 +29,10 @@
         <button type="submit">ファイルアップロード</button>
     </form>
 
+    <!-- 画像一覧 -->
+    <h2>アップロードされた画像一覧</h2>
+    <div id="imagesList"></div>
+
     <!-- レスポンス表示エリア -->
     <h3>レスポンス:</h3>
     <pre id="response"></pre>
@@ -41,7 +46,7 @@
             document.getElementById('response').innerText = JSON.stringify(message, null, 2);
         }
 
-        // コメント一覧を取得して表示する関数
+        // コメント一覧を取得して表示
         function fetchComments() {
             fetch(`${apiUrl}/comments`)
             .then(res => res.json())
@@ -54,9 +59,30 @@
                     commentDiv.innerHTML = `
                         <p>${comment.text}</p>
                         <p>いいね: <span id="likes-${comment.id}">${comment.likes}</span></p>
-                        <button onclick="likeComment(${comment.id})">いいね</button>
+                        <button onclick="likeComment(${comment.id})">コメントにいいね</button>
                     `;
                     list.appendChild(commentDiv);
+                });
+            })
+            .catch(err => console.error(err));
+        }
+
+        // 画像一覧を取得して表示
+        function fetchImages() {
+            fetch(`${apiUrl}/images`)
+            .then(res => res.json())
+            .then(data => {
+                const imagesList = document.getElementById('imagesList');
+                imagesList.innerHTML = '';
+                data.forEach(image => {
+                    const imageDiv = document.createElement('div');
+                    imageDiv.className = 'imageItem';
+                    imageDiv.innerHTML = `
+                        <img src="${apiUrl}/uploads/${image.filename}" alt="${image.originalName}">
+                        <p>いいね: <span id="imageLikes-${image.id}">${image.likes}</span></p>
+                        <button onclick="likeImage(${image.id})">画像にいいね</button>
+                    `;
+                    imagesList.appendChild(imageDiv);
                 });
             })
             .catch(err => console.error(err));
@@ -75,12 +101,12 @@
             .then(data => {
                 showResponse(data);
                 document.getElementById('commentInput').value = '';
-                fetchComments(); // コメント一覧を更新
+                fetchComments(); // コメント一覧更新
             })
             .catch(err => console.error(err));
         });
 
-        // 特定のコメントにいいねを送る処理
+        // コメントにいいねを送る
         function likeComment(id) {
             fetch(`${apiUrl}/comment/like`, {
                 method: 'POST',
@@ -90,7 +116,22 @@
             .then(res => res.json())
             .then(data => {
                 showResponse(data);
-                fetchComments(); // コメント一覧を更新
+                fetchComments(); // コメント一覧更新
+            })
+            .catch(err => console.error(err));
+        }
+
+        // 画像にいいねを送る
+        function likeImage(id) {
+            fetch(`${apiUrl}/image/like`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            })
+            .then(res => res.json())
+            .then(data => {
+                showResponse(data);
+                fetchImages(); // 画像一覧更新
             })
             .catch(err => console.error(err));
         }
@@ -108,12 +149,15 @@
             .then(res => res.json())
             .then(data => {
                 showResponse(data);
+                // 画像アップロードの場合、画像一覧を更新
+                fetchImages();
             })
             .catch(err => console.error(err));
         });
 
-        // ページ読み込み時にコメント一覧を取得
+        // ページ読み込み時に一覧を取得
         fetchComments();
+        fetchImages();
     </script>
 </body>
 </html>
