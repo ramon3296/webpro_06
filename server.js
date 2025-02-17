@@ -7,12 +7,16 @@ const port = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname))); // index.htmlなどの静的ファイルを配信
+app.use(express.static(path.join(__dirname))); // index.html などを配信
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // アップロードファイルを配信
 
-// メモリ内にコメントを保持する仕組み
-// 各コメントは { id, text, likes } の形式
+// コメントの管理
 let comments = [];
 let nextCommentId = 1;
+
+// 画像の管理（アップロードされた画像情報）
+let images = [];
+let nextImageId = 1;
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -47,12 +51,38 @@ app.get('/comments', (req, res) => {
     res.json(comments);
 });
 
-// 【ファイルアップロード】POST /upload
+// 【画像アップロード】POST /upload
 app.post('/upload', upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: "ファイルが選択されていません" });
     }
+    // 画像の場合は画像情報を保存する
+    if (req.file.mimetype.startsWith('image/')) {
+        const newImage = {
+            id: nextImageId++,
+            filename: req.file.filename,        // multer が生成したファイル名
+            originalName: req.file.originalname,  // 元のファイル名
+            likes: 0
+        };
+        images.push(newImage);
+    }
     res.json({ message: `アップロード成功: ${req.file.originalname}` });
+});
+
+// 【全画像取得】GET /images
+app.get('/images', (req, res) => {
+    res.json(images);
+});
+
+// 【画像にいいね】POST /image/like
+app.post('/image/like', (req, res) => {
+    const { id } = req.body;
+    const image = images.find(img => img.id === parseInt(id));
+    if (!image) {
+        return res.status(404).json({ error: "画像が見つかりません" });
+    }
+    image.likes++;
+    res.json({ message: "画像にいいね", image });
 });
 
 app.listen(port, () => {
