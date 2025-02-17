@@ -1,40 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>シンプルBBS</title>
+    <title>シンプルBBS（フォーム対応）</title>
     <style>
         body { font-family: Arial; padding: 20px; }
+        form { margin-bottom: 20px; }
         input, button { margin: 5px; padding: 10px; }
     </style>
 </head>
 <body>
 
-    <h2>シンプルBBS</h2>
+    <h1>📌 シンプルBBS - フォーム対応</h1>
 
-    <h3>📌 いいね機能</h3>
-    <button onclick="sendLike()">👍 いいね</button>
+    <!-- いいねフォーム -->
+    <form action="/like" method="POST">
+        <button type="submit">👍 いいね</button>
+    </form>
 
-    <h3>💬 コメント機能</h3>
-    <input id="commentInput" placeholder="コメントを入力" />
-    <button onclick="sendComment()">送信</button>
+    <!-- コメントフォーム -->
+    <form action="/comment" method="POST">
+        <input type="text" name="comment" placeholder="コメントを入力" required>
+        <button type="submit">💬 コメント送信</button>
+    </form>
 
-    <h3>📤 ファイルアップロード</h3>
+    <!-- ファイルアップロードフォーム -->
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">📤 アップロード</button>
+    </form>
+
+    <hr>
+
+    <h3>JavaScriptからの動作確認</h3>
+    <button onclick="sendLike()">👍 JSからいいね</button>
+    <input id="commentInput" placeholder="コメント" />
+    <button onclick="sendComment()">💬 JSからコメント送信</button>
     <input type="file" id="fileInput">
-    <button onclick="uploadFile()">アップロード</button>
+    <button onclick="uploadFile()">📤 JSからアップロード</button>
 
     <h3>レスポンス:</h3>
     <pre id="response"></pre>
 
     <script>
         "use strict";
-
         const apiUrl = "http://localhost:3000";
 
         function showResponse(message) {
             document.getElementById('response').innerText = JSON.stringify(message, null, 2);
         }
 
-        // 📌 いいね機能
+        // 📌 いいね機能 (JavaScript)
         function sendLike() {
             fetch(`${apiUrl}/like`, {
                 method: 'POST',
@@ -45,7 +60,7 @@
             .then(data => showResponse(data));
         }
 
-        // 📌 コメント機能
+        // 📌 コメント機能 (JavaScript)
         function sendComment() {
             const comment = document.getElementById('commentInput').value;
             fetch(`${apiUrl}/comment`, {
@@ -57,7 +72,7 @@
             .then(data => showResponse(data));
         }
 
-        // 📌 ファイルアップロード機能
+        // 📌 ファイルアップロード機能 (JavaScript)
         function uploadFile() {
             const file = document.getElementById('fileInput').files[0];
             const formData = new FormData();
